@@ -1,9 +1,9 @@
 'use client';
-import { cn } from '@/lib/twMerge';
-import { KeyboardArrowDownOutlined } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { FC, PropsWithChildren, useMemo, useState } from 'react';
 import { useToggle, useWindowSize } from 'usehooks-ts';
+import { ChevronDown } from 'lucide-react';
 
 interface SeeMoreProps extends PropsWithChildren {
   maxHeight: number;
@@ -31,15 +31,15 @@ const SeeMore: FC<SeeMoreProps> = ({ maxHeight, children, disabledOnDesktop = fa
         style={{
           ...(isOpen
             ? {
-                height: element?.clientHeight,
-              }
+              height: element?.clientHeight,
+            }
             : {
-                ...(isOverflow
-                  ? {
-                      height: maxHeight,
-                    }
-                  : {}),
-              }),
+              ...(isOverflow
+                ? {
+                  height: maxHeight,
+                }
+                : {}),
+            }),
         }}
         className='overflow-hidden transition-all'
       >
@@ -61,24 +61,23 @@ const SeeMore: FC<SeeMoreProps> = ({ maxHeight, children, disabledOnDesktop = fa
           )}
         >
           <Button
-            endIcon={
-              <KeyboardArrowDownOutlined
-                className='transition-all'
-                sx={{
-                  ...(isOpen
-                    ? {
-                        rotate: '180deg',
-                      }
-                    : {}),
-                }}
-              />
-            }
+
             color='secondary'
             onClick={toggle}
-            size='small'
-            fullWidth
+            size='sm'
+
           >
             {isOpen ? 'Thu gọn' : 'Xem thêm'}
+            <ChevronDown
+              className='transition-all'
+              style={{
+                ...(isOpen
+                  ? {
+                    rotate: '180deg',
+                  }
+                  : {}),
+              }}
+            />
           </Button>
         </div>
       )}

@@ -1,86 +1,49 @@
 'use client';
 import { Link } from '@/lib/navigation';
-import { ArrowBackOutlined } from '@mui/icons-material';
-import { Button, Typography } from '@mui/material';
-import { animated, useSpring } from '@react-spring/web';
-import { useTranslations } from 'next-intl';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { motion } from 'motion/react';
 import { FC } from 'react';
 
 type ComingSoonProps = object;
 
 const ComingSoon: FC<ComingSoonProps> = () => {
-  const t = useTranslations();
   return (
-    <div className='absolute flex size-full flex-col items-center justify-center gap-4 p-16 text-center'>
-      <div className='flex flex-col items-center'>
-        <animated.div
-          style={{
-            ...useSpring({
-              from: {
-                opacity: 0,
-              },
-              to: {
-                opacity: 1,
-              },
-              config: {
-                duration: 500,
-              },
-            }),
-          }}
+    <div className='absolute flex size-full flex-col items-center justify-center gap-6 p-16 text-center bg-background'>
+      <div className='flex flex-col items-center gap-4'>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         >
-          <Typography
-            className='text-positive/90 drop-shadow-negative drop-shadow-[1px_1px,1px_-1px,-1px_-1px,-1px_1px]'
-            fontSize={100}
-            variant='h1'
-          >
-            {t('utils.coming_soon.title')}
-          </Typography>
-        </animated.div>
+          <h1 className='text-5xl md:text-7xl font-extrabold tracking-tight text-primary drop-shadow-sm'>
+            Coming Soon
+          </h1>
+        </motion.div>
 
-        <animated.div
-          style={{
-            ...useSpring({
-              from: {
-                opacity: 0,
-              },
-              to: {
-                opacity: 1,
-              },
-              config: {
-                duration: 500,
-              },
-            }),
-          }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
         >
-          <Typography
-            className='text-positive/90 drop-shadow-negative drop-shadow-[1px_1px,1px_-1px,-1px_-1px,-1px_1px]'
-            fontSize={30}
-            variant='body1'
-          >
-            {t('utils.coming_soon.description')}
-          </Typography>
-        </animated.div>
+          <p className='text-lg md:text-xl text-muted-foreground max-w-[500px]'>
+            We&apos;re working on something awesome! Check back later for updates.
+          </p>
+        </motion.div>
       </div>
 
-      <animated.div
-        style={{
-          ...useSpring({
-            from: {
-              opacity: 0,
-            },
-            to: {
-              opacity: 1,
-            },
-            config: {
-              duration: 500,
-            },
-          }),
-        }}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
       >
-        <Button variant='contained' startIcon={<ArrowBackOutlined />} component={Link} href='/' color='secondary'>
-          {t('common.go_back')}
+        <Button variant='default' size='lg' className='mt-4' asChild>
+          <Link href='/'>
+            <ArrowLeft className='mr-2 size-4' />
+            Go Back
+          </Link>
         </Button>
-      </animated.div>
+      </motion.div>
     </div>
   );
 };

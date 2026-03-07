@@ -1,5 +1,5 @@
 'use client';
-import { cn } from '@/lib/twMerge';
+import { cn } from '@/lib/utils';
 import { ComponentProps, FC } from 'react';
 import CircleLoading from '../circle-loading';
 

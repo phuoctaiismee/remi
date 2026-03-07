@@ -1,5 +1,5 @@
-import { KeyboardArrowDownOutlined } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { Button } from '@/components/ui/button';
+import { ChevronDown } from 'lucide-react';
 import { FC, PropsWithChildren, useCallback, useState } from 'react';
 
 const DEFAULT_MAX_HEIGHT = 500;
@@ -28,12 +28,14 @@ const ScrollMore: FC<ScrollMoreProps> = ({ children, maxHeight = DEFAULT_MAX_HEI
         <div className='relative flex justify-center'>
           <div className='from-background/0 to-background absolute bottom-full left-0 h-[50px] w-full bg-gradient-to-b' />
 
-          <IconButton
+          <Button
+            size={'icon'}
+            variant={'ghost'}
             className='bg-background text-secondary border-secondary rounded-full border'
             onClick={handleScrollDown}
           >
-            <KeyboardArrowDownOutlined />
-          </IconButton>
+            <ChevronDown />
+          </Button>
         </div>
       )}
     </div>

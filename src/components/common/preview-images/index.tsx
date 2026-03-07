@@ -1,8 +1,11 @@
+'use client';
+
 import { AppTopbar } from '@/lib/navigation';
-import { Dialog, Slide, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import Image from 'next/image';
 import { FC, Key, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { useIsMounted } from 'usehooks-ts';
 
 interface ImageItem {
   src: string;
@@ -20,17 +23,23 @@ interface PreviewImagesProps {
 
 const PreviewImages: FC<PreviewImagesProps> = ({ images, initialSlide = 0, open = false, title, onClose }) => {
   const [realIndex, setRealIndex] = useState(() => initialSlide);
+  const isMounted = useIsMounted()
+
+  if (!isMounted) return null;
 
   return (
-    <Dialog open={open} slots={{ transition: Slide }} slotProps={{ transition: { direction: 'left' } }}>
-      <div className='bg-positive/90 fixed top-0 left-0 z-[100] flex size-full flex-col'>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose?.()}>
+      <DialogContent className='bg-positive/90 border-none p-0 max-w-none w-screen h-screen m-0 flex flex-col gap-0 duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right z-[100] [&>button]:hidden'>
+        <DialogTitle className='hidden'>{title || 'Image Preview'}</DialogTitle>
+        <DialogDescription className='hidden'>Preview images in full screen</DialogDescription>
+
         <AppTopbar
           className='text-negative bg-transparent'
           onBack={onClose}
-          center={<Typography className='line-clamp-1 text-xs font-normal'>{title}</Typography>}
+          center={<span className='line-clamp-1 text-xs font-normal'>{title}</span>}
         />
 
-        <div className='flex-1'>
+        <div className='flex-1 overflow-hidden'>
           <Swiper
             style={{ width: '100%', height: '100%' }}
             slidesPerView={1}
@@ -54,7 +63,7 @@ const PreviewImages: FC<PreviewImagesProps> = ({ images, initialSlide = 0, open 
             <span className='text-negative/50'>{images.length}</span>
           </div>
         </div>
-      </div>
+      </DialogContent>
     </Dialog>
   );
 };

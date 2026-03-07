@@ -1,4 +1,4 @@
-import { cn } from '@/lib/twMerge';
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { ComponentProps, FC } from 'react';
 

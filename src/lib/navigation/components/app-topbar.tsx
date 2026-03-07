@@ -1,11 +1,10 @@
 'use client';
-import { cn } from '@/lib/twMerge';
-import { ChevronLeftIcon, HomeIcon } from '@heroicons/react/24/outline';
-import { IconButton, LinearProgress, SvgIcon, Typography } from '@mui/material';
-import { useIsFetching } from '@tanstack/react-query';
 import React, { ComponentProps, FC } from 'react';
 import { useRouter } from '../hooks';
 import Link from './link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, HomeIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface AppTopbarProps extends ComponentProps<'div'> {
   left?: React.ReactNode;
@@ -35,30 +34,27 @@ const AppTopbar: FC<AppTopbarProps> = ({
   const center = centerFromProps ? (
     centerFromProps
   ) : title ? (
-    <Typography className='text-content-1 font-medium'>{title}</Typography>
+    <h2 className='text-content-1 font-medium'>{title}</h2>
   ) : null;
 
   const left = leftFromProps ? (
     leftFromProps
   ) : canBack ? (
-    <IconButton onClick={handleBack}>
-      <SvgIcon>
-        <ChevronLeftIcon />
-      </SvgIcon>
-    </IconButton>
+    <Button variant='ghost' size="icon" onClick={handleBack}>
+      <ArrowLeft />
+    </Button>
   ) : null;
 
   const right = rightFromProps ? (
     rightFromProps
   ) : typeof rightFromProps !== 'boolean' && canGoHome ? (
-    <IconButton component={Link} href='/'>
-      <SvgIcon>
+    <Link href='/'>
+      <Button variant='ghost' size="icon">
         <HomeIcon />
-      </SvgIcon>
-    </IconButton>
+      </Button>
+    </Link>
   ) : null;
 
-  const isFetching = useIsFetching();
 
   return (
     <>
@@ -86,7 +82,6 @@ const AppTopbar: FC<AppTopbarProps> = ({
         </div>
       </header>
 
-      {isFetching > 0 && <LinearProgress className='fixed top-[80px] left-0 z-1000 w-full' />}
     </>
   );
 };

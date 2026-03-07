@@ -1,10 +1,17 @@
-import RootTheme from '@/components/theme/root';
-import { FC } from 'react';
+'use client';
+import { FC, PropsWithChildren } from 'react';
+import { FrontLayoutTabs } from './components';
 
-type RootLayoutProps = React.PropsWithChildren;
+type RootLayoutProps = PropsWithChildren;
 
 const RootLayout: FC<RootLayoutProps> = ({ children }) => {
-  return <RootTheme>{children}</RootTheme>;
+  return (
+    <>
+      <main className='mx-auto w-full font-sans flex flex-col hide-scrollbar'>{children}</main>
+
+      <FrontLayoutTabs />
+    </>
+  );
 };
 
 export default RootLayout;
