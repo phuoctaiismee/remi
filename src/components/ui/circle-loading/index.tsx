@@ -1,6 +1,6 @@
+import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 import { ComponentProps, FC } from 'react';
-import { Spinner } from '@/components/ui/spinner';
 
 type CircleLoadingProps = ComponentProps<'div'> & {
   message?: string;

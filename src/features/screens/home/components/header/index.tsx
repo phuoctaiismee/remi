@@ -1,3 +1,7 @@
+import { CardActionArea } from '@/components/ui/card-action-area'
+import { CONST_TRANSITION } from '@/const'
+import { Link } from '@/lib/navigation'
+import { ViewTransition } from '@/lib/view-transition'
 import { Bell } from 'lucide-react'
 import Image from 'next/image'
 
@@ -14,7 +18,11 @@ const Header = () => {
                 <button className="w-11 h-11 rounded-full bg-neutral-800/50 flex items-center justify-center border border-neutral-700/50">
                     <Bell className="w-5 h-5 text-neutral-300" />
                 </button>
-                <div className="w-11 h-11 rounded-full overflow-hidden bg-neutral-700 border border-neutral-600">
+                <ViewTransition name={CONST_TRANSITION.CURRENT_USER_AVATAR}>
+                    <CardActionArea
+                component={Link}
+                href="/profile"
+                className="w-11 h-11 rounded-full overflow-hidden bg-neutral-700 border border-neutral-600">
                     <Image
                         src="https://picsum.photos/seed/avatar/100/100"
                         alt="Profile"
@@ -23,7 +31,8 @@ const Header = () => {
                         className="w-full h-full object-cover"
                         referrerPolicy="no-referrer"
                     />
-                </div>
+                </CardActionArea>
+                </ViewTransition>
             </div>
         </div>
     )

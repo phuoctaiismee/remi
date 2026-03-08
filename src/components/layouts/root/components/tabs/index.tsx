@@ -3,7 +3,7 @@
 import { CardActionArea } from '@/components/ui/card-action-area';
 import { Link } from '@/lib/navigation';
 import { cn } from '@/lib/utils';
-import { Home, LayoutGrid, Settings, User, LucideIcon } from 'lucide-react';
+import { Home, LayoutGrid, LucideIcon, Settings, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { FC, useMemo } from 'react';
 
@@ -59,7 +59,7 @@ const FrontLayoutTabs: FC<FrontLayoutTabsProps> = () => {
               key={tab.path}
               href={tab.path}
               className={cn(
-                'flex size-14 items-center justify-center rounded-full transition-colors',
+                'flex size-14 items-center justify-center rounded-full',
                 isActive
                   ? 'bg-white text-neutral-900 shadow-sm'
                   : 'text-neutral-400 hover:text-white'

@@ -1,14 +1,15 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import type { Metadata, Viewport } from 'next';
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getTranslations } from 'next-intl/server';
-import "./globals.css";
-import RqProvider from "@/providers/react-query";
+import RootLayout from "@/components/layouts/root";
 import { DEVTOOL } from "@/config/env";
 import { DEFAULT_METADATA } from "@/config/metadata";
 import { cn } from "@/lib/utils";
-import RootLayout from "@/components/layouts/root";
+import RqProvider from "@/providers/react-query";
 import { ThemeProvider } from "@/providers/themes";
+import { NotificationsProvider } from "@/providers/notifications";
+import type { Metadata, Viewport } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +56,7 @@ export default async function AppLayout({
 
         <NextIntlClientProvider>
           <RqProvider>
+            <NotificationsProvider />
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
               <RootLayout>
                 {children}

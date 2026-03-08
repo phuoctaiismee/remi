@@ -1,7 +1,7 @@
 'use client';
 
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { AppTopbar } from '@/lib/navigation';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import Image from 'next/image';
 import { FC, Key, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';

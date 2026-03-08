@@ -1,8 +1,8 @@
 'use client';
 
-import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
+import * as React from 'react';
 
 export interface CardActionAreaProps extends React.HTMLAttributes<HTMLElement> {
   component?: React.ElementType;
@@ -40,8 +40,9 @@ export const CardActionArea = React.forwardRef<HTMLElement, CardActionAreaProps>
       <Component
         ref={ref}
         className={cn(
-          'relative overflow-hidden cursor-pointer focus:outline-none transition-colors',
+          'relative overflow-hidden cursor-pointer focus:outline-none',
           disabled && 'cursor-not-allowed pointer-events-none hover:bg-transparent dark:hover:bg-transparent',
+          "active:scale-90 transition-all duration-300 ease-initial" ,
           className
         )}
         onClick={handleClick}

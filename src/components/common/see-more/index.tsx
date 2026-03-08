@@ -1,9 +1,9 @@
 'use client';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
 import { FC, PropsWithChildren, useMemo, useState } from 'react';
 import { useToggle, useWindowSize } from 'usehooks-ts';
-import { ChevronDown } from 'lucide-react';
 
 interface SeeMoreProps extends PropsWithChildren {
   maxHeight: number;
