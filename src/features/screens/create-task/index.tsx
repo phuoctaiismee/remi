@@ -1,31 +1,41 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
 import { CreateTaskForm, TaskFormValues } from "@/components/forms";
-import { useRouter } from "next/navigation";
+import { AppTopbar, useRouter } from "@/lib/navigation";
+import { createTask } from "@/lib/db";
 
 export default function () {
     const router = useRouter();
 
-    const goBack = () => {
-        router.back();
+
+    const goSchedule = () => {
+        router.push("/schedule");
     };
 
-    const handleSubmit = (data: TaskFormValues) => {
+    const handleSubmit = async (data: TaskFormValues) => {
         console.log("Task Created:", data);
-        // Here you would typically save the task to your state/database
-        goBack();
+        try {
+            // Combine date and time
+            const d = data.date;
+            const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            const reminderTime = `${dateStr}T${data.time}:00`;
+
+            await createTask({
+                content: data.title,
+                hashtags: data.hashtags,
+                reminder_time: reminderTime
+            });
+            console.log("Task successfully saved to db");
+        } catch (error) {
+            console.error("Failed to create task", error);
+        }
+        goSchedule();
     };
 
     return (
-        <div className="flex-1 overflow-y-auto pb-32 px-4 pt-12 hide-scrollbar flex flex-col h-full">
-            <div className="flex items-center justify-between mb-8 text-white px-2">
-                <button onClick={goBack} className="w-11 h-11 rounded-full bg-neutral-800/50 flex items-center justify-center border border-neutral-700/50 transition-colors hover:bg-neutral-700/50">
-                    <ArrowLeft className="w-5 h-5 text-neutral-300" />
-                </button>
-                <h1 className="text-xl font-medium">New Task</h1>
-                <div className="w-11 h-11"></div>
-            </div>
+        <div className="hide-scrollbar flex flex-col h-dvh p-4">
+            <AppTopbar center={<h1 className="text-xl font-medium">New Task</h1>} />
+
 
             <CreateTaskForm onSubmit={handleSubmit} />
         </div>

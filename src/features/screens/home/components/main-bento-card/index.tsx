@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { CONST_TRANSITION } from "@/const";
 import { Calendar, Plus, Share2 } from "lucide-react";
 import Link from "next/link";
+import { ViewTransition } from '@/lib/view-transition';
 const MainBentoCard = () => {
   return (
     <div className="bg-[#D1E8C4] rounded-[32px] p-6 mb-4 relative">
@@ -12,13 +14,17 @@ const MainBentoCard = () => {
         <div className="flex gap-2">
           <Button size="icon" className="size-10 rounded-full">
             <Share2 className="w-4 h-4" />
+
           </Button>
-          <Link
-            href="/create-task"
-            className="w-10 h-10 rounded-full bg-neutral-900 text-white flex items-center justify-center transition-transform active:scale-95"
-          >
-            <Plus className="w-5 h-5" />
-          </Link>
+          <ViewTransition name={CONST_TRANSITION.TASK_CREATE_BUTTON}>
+
+            <Link
+              href="/create-task"
+              className="w-10 h-10 rounded-full bg-neutral-900 text-white flex items-center justify-center transition-transform active:scale-95"
+            >
+              <Plus className="w-5 h-5" />
+            </Link>
+          </ViewTransition>
         </div>
       </div>
       <p className="text-sm font-semibold text-neutral-600/80  mb-2 uppercase tracking-wider">

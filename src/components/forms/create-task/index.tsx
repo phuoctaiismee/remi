@@ -1,20 +1,26 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { Mic, Check } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Mic, Plus } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DatePicker } from "@/components/ui/date-picker";
 import { SpinnerTimePicker } from "@/components/ui/spinner-time-picker";
-import { CategorySelector } from "@/features/screens/create-task/components/category-selector";
-import { VoiceOverlay } from "@/features/screens/create-task/components/voice-overlay";
+import { HashtagSelector, VoiceOverlay } from "@/features/screens/create-task/components";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { CONST_TRANSITION } from "@/const";
+import { ViewTransition } from '@/lib/view-transition';
 
 export const taskSchema = z.object({
     title: z.string().min(1, "Task title is required"),
     date: z.date(),
     time: z.string(),
-    category: z.string(),
+    hashtags: z.array(z.object({
+        name: z.string(),
+        color: z.string()
+    })),
 });
 
 export type TaskFormValues = z.infer<typeof taskSchema>;
@@ -26,8 +32,6 @@ interface CreateTaskFormProps {
 
 export function CreateTaskForm({ initialValues, onSubmit }: CreateTaskFormProps) {
     const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-
     const defaultTime = () => {
         const now = new Date();
         const hours = now.getHours().toString().padStart(2, '0');
@@ -41,19 +45,12 @@ export function CreateTaskForm({ initialValues, onSubmit }: CreateTaskFormProps)
             title: initialValues?.title || "",
             date: initialValues?.date || new Date(),
             time: initialValues?.time || defaultTime(),
-            category: initialValues?.category || "Personal",
+            hashtags: initialValues?.hashtags || []
         },
     });
 
     const titleValue = form.watch("title");
 
-    // Auto-resize textarea
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        }
-    }, [titleValue]);
 
     useEffect(() => {
         const handleGlobalPointerUp = () => {
@@ -76,87 +73,75 @@ export function CreateTaskForm({ initialValues, onSubmit }: CreateTaskFormProps)
         onSubmit(data);
     };
 
-    const onError = () => {
-        const input = document.getElementById('task-title-input');
-        if (input) {
-            input.classList.add('border-red-500', 'border-b-2');
-            setTimeout(() => input.classList.remove('border-red-500', 'border-b-2'), 2000);
-        }
-    };
-
     const setTime = React.useCallback((t: string) => {
         form.setValue("time", t);
     }, [form]);
 
     return (
         <>
-            <form onSubmit={form.handleSubmit(handleSubmit, onError)} className="bg-white rounded-[32px] p-6 mb-24 flex-1 flex flex-col relative shadow-sm overflow-y-auto hide-scrollbar">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex-1 flex flex-col overflow-hidden pb-2">
+                {/* Content Scroll (Title + Quick Actions) */}
+                <div className="flex-1 overflow-y-auto hide-scrollbar">
+                    <div className="bg-white rounded-[32px] px-6 pt-8 pb-8">
+                        {/* Title Input */}
+                        <div className="mb-8">
+                            <Textarea
+                                id="task-title-input"
+                                value={form.watch("title")}
+                                onChange={(e) => form.setValue("title", e.target.value)}
+                                placeholder="What do you need to do?"
+                                className="w-full text-3xl font-semibold text-neutral-900 placeholder:text-neutral-300 outline-none resize-none bg-transparent overflow-hidden leading-tight transition-colors ring-0 border-none focus-visible:ring-0 focus-visible:border-none"
+                                rows={1}
+                                autoFocus
+                            />
+                        </div>
 
-                {/* Title Input */}
-                <div className="mb-8 mt-4">
-                    <textarea
-                        id="task-title-input"
-                        {...(() => {
-                            const { ref: registerRef, ...rest } = form.register("title");
-                            return {
-                                ...rest,
-                                ref: (e: HTMLTextAreaElement | null) => {
-                                    registerRef(e);
-                                    // @ts-ignore
-                                    textareaRef.current = e;
-                                }
-                            };
-                        })()}
-                        placeholder="What do you need to do?"
-                        className="w-full text-3xl font-semibold text-neutral-900 placeholder:text-neutral-300 outline-none resize-none bg-transparent overflow-hidden leading-tight transition-colors"
-                        rows={1}
-                        autoFocus
-                    />
-                </div>
+                        {/* Quick Actions */}
+                        <div className="flex flex-col gap-6">
+                            <div className="flex gap-3">
+                                <DatePicker
+                                    date={form.watch("date")}
+                                    setDate={(d) => form.setValue("date", d)}
+                                />
+                                <SpinnerTimePicker
+                                    time={form.watch("time")}
+                                    setTime={setTime}
+                                />
+                            </div>
 
-                {/* Quick Actions (Date, Time, Category) */}
-                <div className="flex flex-col gap-6">
-                    <div className="flex gap-3">
-                        <DatePicker
-                            date={form.watch("date")}
-                            setDate={(d) => form.setValue("date", d)}
-                        />
-                        <SpinnerTimePicker
-                            time={form.watch("time")}
-                            setTime={setTime}
-                        />
+                            <HashtagSelector
+                                hashtags={form.watch("hashtags")}
+                                setHashtags={(h) => form.setValue("hashtags", h)}
+                            />
+                        </div>
                     </div>
-
-                    <CategorySelector
-                        category={form.watch("category")}
-                        setCategory={(c) => form.setValue("category", c)}
-                    />
                 </div>
 
-                {/* Hidden submit button to allow form submission via Enter if needed */}
-                <button type="submit" className="hidden" id="hidden-submit-btn" />
+                {/* Bottom Bar Fixed */}
+                <div className="fixed bottom-4 left-4 right-4 z-20 flex gap-3 mt-4">
+                    <Button
+                        variant="secondary"
+                        size="icon"
+                        type="button"
+                        onPointerDown={handlePointerDown}
+                        className="size-14 shrink-0 rounded-full bg-neutral-900 text-white flex items-center justify-center shadow-xl active:scale-95 transition-all touch-none cursor-pointer"
+                    >
+                        <Mic className="size-6" />
+                    </Button>
+                    <ViewTransition name={CONST_TRANSITION.TASK_CREATE_BUTTON}>
+
+                        <Button
+                            type="submit"
+                            className="flex-1 h-14 rounded-full bg-[#D1E8C4] text-neutral-900 font-semibold text-lg shadow-xl active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+                        >
+                            <Plus className="size-5" /> Create Task
+                        </Button>
+                    </ViewTransition>
+                </div>
             </form>
 
-            {/* Bottom Action Bar */}
-            <div className="absolute bottom-6 left-6 right-6 z-20 flex gap-3">
-                <button
-                    type="button"
-                    onPointerDown={handlePointerDown}
-                    className="w-14 h-14 shrink-0 rounded-full bg-neutral-900 text-white flex items-center justify-center shadow-xl active:scale-95 transition-all touch-none cursor-pointer"
-                >
-                    <Mic className="w-6 h-6" />
-                </button>
-                <button
-                    type="button"
-                    onClick={() => {
-                        const btn = document.getElementById('hidden-submit-btn');
-                        if (btn) btn.click();
-                    }}
-                    className="flex-1 h-14 rounded-full bg-[#D1E8C4] text-neutral-900 font-semibold text-lg shadow-xl active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
-                >
-                    <Check className="w-5 h-5" /> Create Task
-                </button>
-            </div>
+
+
 
             <VoiceOverlay isOpen={isVoiceModalOpen} />
         </>

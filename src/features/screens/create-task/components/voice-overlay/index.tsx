@@ -6,7 +6,7 @@ interface VoiceOverlayProps {
     isOpen: boolean;
 }
 
-export function VoiceOverlay({ isOpen }: VoiceOverlayProps) {
+const VoiceOverlay = ({ isOpen }: VoiceOverlayProps) => {
     if (!isOpen) return null;
 
     return (
@@ -28,3 +28,6 @@ export function VoiceOverlay({ isOpen }: VoiceOverlayProps) {
         </div>
     );
 }
+
+export default VoiceOverlay
+

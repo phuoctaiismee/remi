@@ -4,7 +4,6 @@ import { DEFAULT_METADATA } from "@/config/metadata";
 import { cn } from "@/lib/utils";
 import RqProvider from "@/providers/react-query";
 import { ThemeProvider } from "@/providers/themes";
-import { NotificationsProvider } from "@/providers/notifications";
 import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getTranslations } from 'next-intl/server';
@@ -51,12 +50,12 @@ export default async function AppLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={cn('antialiased hide-scrollbar', geistSans.variable, geistMono.variable)}
+        className={cn('antialiased hide-scrollbar select-none', geistSans.variable, geistMono.variable)}
       >
 
         <NextIntlClientProvider>
           <RqProvider>
-            <NotificationsProvider />
+            {/* <NotificationsProvider /> */}
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
               <RootLayout>
                 {children}

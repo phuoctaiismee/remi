@@ -1,18 +1,36 @@
-mod worker;
+use tauri_plugin_sql::{Migration, MigrationKind};
 
-#[tauri::command]
-fn notify_task_created(state: tauri::State<'_, worker::WorkerState>) {
-    // Send signal to the worker so it recalculates the closest task sleep
-    let _ = state.tx.blocking_send(());
-}
-
-#[tokio::main]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub async fn run() {
+pub fn run() {
+    let migrations = vec![
+        Migration {
+            version: 1,
+            description: "create_initial_tables",
+            sql: "CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, type TEXT, reminder_time TEXT, status TEXT DEFAULT 'pending');",
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 3,
+            description: "add_hashtags_and_relations",
+            sql: "
+            CREATE TABLE IF NOT EXISTS hashtags (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT UNIQUE NOT NULL,
+                color TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS task_hashtags (
+                task_id INTEGER NOT NULL,
+                hashtag_id INTEGER NOT NULL,
+                PRIMARY KEY (task_id, hashtag_id),
+                FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+                FOREIGN KEY (hashtag_id) REFERENCES hashtags(id) ON DELETE CASCADE
+            );",
+            kind: MigrationKind::Up,
+        }
+    ];
+
     tauri::Builder::default()
-        .plugin(tauri_plugin_sql::Builder::new().build())
-        .plugin(tauri_plugin_notification::init())
-        .invoke_handler(tauri::generate_handler![notify_task_created])
+        .plugin(tauri_plugin_sql::Builder::default().add_migrations("sqlite:remider.db", migrations).build())
         .setup(|app| {
             if cfg!(debug_assertions) {
                 app.handle().plugin(
@@ -21,10 +39,6 @@ pub async fn run() {
                         .build(),
                 )?;
             }
-            
-            // Start our rust background polling logic
-            worker::start_background_worker(app.handle().clone());
-            
             Ok(())
         })
         .run(tauri::generate_context!())

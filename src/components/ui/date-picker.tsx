@@ -25,17 +25,21 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
 
     return (
         <Popover>
-            <PopoverTrigger className="flex-1 flex items-center justify-center gap-2 bg-neutral-50 border border-neutral-100 py-3.5 rounded-2xl active:scale-95 transition-transform">
-                <CalendarIcon className="w-4 h-4 text-blue-500" />
+            <PopoverTrigger className="flex-1 flex items-center justify-center gap-2 bg-background/10 backdrop-blur-2xl border border-neutral-100 py-3.5 rounded-2xl active:scale-95 transition-transform">
+                <CalendarIcon className="size-4 text-blue-500" />
                 <span className="font-medium text-sm text-neutral-700">{formatDisplayDate(date)}</span>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 rounded-2xl border-none shadow-xl" align="start">
+            <PopoverContent className="w-auto p-0 rounded-2xl border-none shadow-xl font-sans" align="start">
                 <Calendar
                     mode="single"
                     selected={date}
                     onSelect={(d) => d && setDate(d)}
                     initialFocus
                     className="p-3"
+                    captionLayout="dropdown"
+                    classNames={{
+                        day_button: "size-10"
+                    }}
                 />
             </PopoverContent>
         </Popover>

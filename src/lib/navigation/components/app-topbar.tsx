@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, HomeIcon } from 'lucide-react';
+import { ArrowLeft, LayoutGrid } from 'lucide-react';
 import React, { ComponentProps, FC } from 'react';
 import { useRouter } from '../hooks';
 import Link from './link';
@@ -40,8 +40,8 @@ const AppTopbar: FC<AppTopbarProps> = ({
   const left = leftFromProps ? (
     leftFromProps
   ) : canBack ? (
-    <Button variant='ghost' size="icon" onClick={handleBack}>
-      <ArrowLeft />
+    <Button variant='outline' size="icon" onClick={handleBack} className="w-11 h-11 rounded-full bg-neutral-800/50 flex items-center justify-center border border-neutral-700/50 hover:bg-neutral-700/50">
+      <ArrowLeft className="size-5 text-neutral-300" />
     </Button>
   ) : null;
 
@@ -49,8 +49,8 @@ const AppTopbar: FC<AppTopbarProps> = ({
     rightFromProps
   ) : typeof rightFromProps !== 'boolean' && canGoHome ? (
     <Link href='/'>
-      <Button variant='ghost' size="icon">
-        <HomeIcon />
+      <Button variant='outline' size="icon" className="w-11 h-11 rounded-full bg-neutral-800/50 flex items-center justify-center border border-neutral-700/50 hover:bg-neutral-700/50">
+        <LayoutGrid className="size-5 text-neutral-300" />
       </Button>
     </Link>
   ) : null;
@@ -67,7 +67,7 @@ const AppTopbar: FC<AppTopbarProps> = ({
         })}
         {...props}
       >
-        <div className='relative flex h-[80px] items-center justify-between gap-2 border-b border-white/10 bg-[#161922] px-4'>
+        <div className='relative flex h-[80px] items-center justify-between gap-2 bg-background/10 backdrop-blur-2xl px-4'>
           <div>{left}</div>
 
           <div
